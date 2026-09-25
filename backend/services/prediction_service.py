@@ -15,6 +15,30 @@ from ml.feature_engineer import PlacementFeatureEngineer
 
 MODEL_DIR = os.path.join(ROOT_DIR, "ml", "saved_models")
 
+def patch_sklearn_imputers(estimator):
+    """Recursively patches SimpleImputer instances in scikit-learn pipelines to ensure cross-version compatibility (e.g. missing _fill_dtype attribute across sklearn versions)."""
+    if estimator is None:
+        return
+    if not hasattr(estimator, "_fill_dtype") and hasattr(estimator, "statistics_"):
+        try:
+            setattr(estimator, "_fill_dtype", getattr(estimator, "statistics_", np.array([0.0])).dtype)
+        except Exception:
+            pass
+
+    if hasattr(estimator, "named_steps"):
+        for step_name, step in estimator.named_steps.items():
+            patch_sklearn_imputers(step)
+    elif hasattr(estimator, "transformers_"):
+        for item in estimator.transformers_:
+            if isinstance(item, (list, tuple)) and len(item) >= 2:
+                patch_sklearn_imputers(item[1])
+    elif hasattr(estimator, "named_transformers_"):
+        for name, trans in estimator.named_transformers_.items():
+            patch_sklearn_imputers(trans)
+    elif hasattr(estimator, "steps"):
+        for name, step in estimator.steps:
+            patch_sklearn_imputers(step)
+
 class PredictionService:
     def __init__(self, model_dir: str = MODEL_DIR):
         self.model_dir = model_dir
@@ -33,6 +57,10 @@ class PredictionService:
         self.clf_pipeline = joblib.load(clf_path)
         self.reg_pipeline = joblib.load(reg_path)
         
+        # Patch imputer version compatibility across scikit-learn releases
+        patch_sklearn_imputers(self.clf_pipeline)
+        patch_sklearn_imputers(self.reg_pipeline)
+
         if os.path.exists(meta_path):
             with open(meta_path, "r") as f:
                 self.metadata = json.load(f)
