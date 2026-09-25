@@ -42,19 +42,25 @@ class PredictionService:
         if self.clf_pipeline is None or self.reg_pipeline is None:
             self.load_models()
 
-        input_dict = student_input.dict()
+        # Support both Pydantic v1 dict() and Pydantic v2 model_dump()
+        if hasattr(student_input, "model_dump"):
+            input_dict = student_input.model_dump()
+        else:
+            input_dict = student_input.dict()
+
         df_input = pd.DataFrame([input_dict])
 
         # Stage 1: Classification Prediction
-        clf_pred_class = self.clf_pipeline.predict(df_input)[0]
+        clf_pred_class = int(self.clf_pipeline.predict(df_input)[0])
         
         if hasattr(self.clf_pipeline, "predict_proba"):
-            proba = float(self.clf_pipeline.predict_proba(df_input)[0][1])
+            proba_raw = self.clf_pipeline.predict_proba(df_input)[0][1]
+            proba = float(proba_raw)
         else:
             proba = 1.0 if clf_pred_class == 1 else 0.0
 
         placement_status = "Placed" if proba >= 0.5 else "Not Placed"
-        proba_pct = round(proba * 100, 1)
+        proba_pct = float(round(proba * 100, 1))
 
         if proba >= 0.75 or proba <= 0.25:
             confidence = "High"
@@ -68,25 +74,32 @@ class PredictionService:
         if placement_status == "Placed":
             raw_lpa = float(self.reg_pipeline.predict(df_input)[0])
             # Ensure LPA is reasonably bounded within dataset ranges
-            estimated_lpa = round(max(3.0, min(25.0, raw_lpa)), 2)
+            estimated_lpa = float(round(max(3.0, min(25.0, raw_lpa)), 2))
+
+        # Safe metadata extraction
+        clf_algo = "Saved Pipeline"
+        reg_algo = "Saved Pipeline"
+        if isinstance(self.metadata, dict):
+            clf_algo = self.metadata.get("classification", {}).get("selected_algorithm", "Saved Pipeline")
+            reg_algo = self.metadata.get("regression", {}).get("selected_algorithm", "Saved Pipeline")
 
         stage_breakdown = {
             "stage_1_classification": {
                 "status": "Executed",
                 "predicted_status": placement_status,
-                "raw_probability": proba,
-                "algorithm": self.metadata["classification"]["selected_algorithm"] if self.metadata else "Saved Pipeline"
+                "raw_probability": float(round(proba, 4)),
+                "algorithm": clf_algo
             },
             "stage_2_regression": {
                 "status": "Executed" if placement_status == "Placed" else "Skipped (Not Placed)",
                 "estimated_lpa": estimated_lpa,
-                "algorithm": self.metadata["regression"]["selected_algorithm"] if self.metadata else "Saved Pipeline"
+                "algorithm": reg_algo
             }
         }
 
         return PredictionResponse(
             placement_prediction=placement_status,
-            placement_probability=round(proba, 4),
+            placement_probability=float(round(proba, 4)),
             placement_probability_pct=proba_pct,
             estimated_package_lpa=estimated_lpa,
             confidence_level=confidence,
