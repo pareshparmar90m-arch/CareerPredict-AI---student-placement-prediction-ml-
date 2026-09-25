@@ -16,7 +16,7 @@ async function fetchWithFallback(endpointPath, options = {}) {
       const url = `${cleanBase}${endpointPath}`;
       
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000); // 4s timeout per attempt
+      const timeoutId = setTimeout(() => controller.abort(), 45000); // 45s timeout for cloud cold starts
 
       const response = await fetch(url, {
         ...options,
