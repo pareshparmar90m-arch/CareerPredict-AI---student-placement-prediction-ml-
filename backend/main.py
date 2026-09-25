@@ -28,10 +28,13 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Enable CORS for React frontend
+# Enable CORS for React frontend (supports ALLOWED_ORIGINS env variable)
+allowed_origins_raw = os.getenv("ALLOWED_ORIGINS", "*")
+allowed_origins = [origin.strip() for origin in allowed_origins_raw.split(",") if origin.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust for production if needed
+    allow_origins=allowed_origins if allowed_origins else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -42,9 +45,14 @@ app.include_router(prediction_router)
 @app.get("/")
 @app.get("/health")
 async def root():
+    models_ready = (
+        prediction_service.clf_pipeline is not None and 
+        prediction_service.reg_pipeline is not None
+    )
     return {
+        "status": "healthy",
         "title": "Student Placement & Package Prediction System API",
-        "status": "online",
+        "models_loaded": models_ready,
         "docs_url": "/docs",
         "health_check": "/api/health",
         "model_info": "/api/model-info",
@@ -60,4 +68,5 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.getenv("PORT", 8000))
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=port)
