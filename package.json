@@ -1,0 +1,13 @@
+{
+  "name": "student-placement-predictor",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "frontend": "npm run dev --prefix frontend",
+    "backend": "python backend/main.py",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "model_name": "Ridge Regression",
+  "cv_r2_mean": 0.6045,
+  "mae": 0.798,
+  "rmse": 0.9989,
+  "r2_score": 0.6062,
+  "rss": 10867.25
+}

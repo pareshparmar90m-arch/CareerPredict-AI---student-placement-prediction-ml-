@@ -1,0 +1,19 @@
+{
+  "model_name": "Logistic Regression",
+  "cv_roc_auc_mean": 0.5799,
+  "accuracy": 0.5708,
+  "precision": 0.5795,
+  "recall": 0.7724,
+  "f1_score": 0.6622,
+  "roc_auc": 0.5848,
+  "confusion_matrix": [
+    [
+      3003,
+      6105
+    ],
+    [
+      2479,
+      8413
+    ]
+  ]
+}

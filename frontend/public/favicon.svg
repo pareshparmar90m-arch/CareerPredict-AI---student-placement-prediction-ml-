@@ -1,0 +1,14 @@
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cpPrimaryGrad" x1="0" y1="0" x2="100" y2="100">
+      <stop offset="0%" stopColor="#2563EB" />
+      <stop offset="100%" stopColor="#1D4ED8" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="84" height="84" rx="22" fill="url(#cpPrimaryGrad)" />
+  <rect x="24" y="56" width="10" height="20" rx="3" fill="#FFFFFF" fillOpacity="0.6" />
+  <rect x="40" y="44" width="10" height="32" rx="3" fill="#FFFFFF" fillOpacity="0.85" />
+  <rect x="56" y="32" width="10" height="44" rx="3" fill="#FFFFFF" />
+  <path d="M68 22L78 32M78 22H70M78 22V30" stroke="#06B6D4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+  <circle cx="78" cy="22" r="4" fill="#22D3EE" />
+</svg>

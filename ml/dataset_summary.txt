@@ -1,0 +1,41 @@
+Shape: 100000 rows, 26 columns
+Duplicates: 0
+Total Nulls: 0
+
+Columns & Data Types:
+ - student_id                     | int64   | Unique: 100000 | Nulls: 0
+ - age                            | int64   | Unique:      7 | Nulls: 0
+ - gender                         | object  | Unique:      2 | Nulls: 0
+ - cgpa                           | float64 | Unique:    551 | Nulls: 0
+ - branch                         | object  | Unique:      6 | Nulls: 0
+ - college_tier                   | object  | Unique:      3 | Nulls: 0
+ - internships_count              | int64   | Unique:      9 | Nulls: 0
+ - projects_count                 | int64   | Unique:     14 | Nulls: 0
+ - certifications_count           | int64   | Unique:     12 | Nulls: 0
+ - coding_skill_score             | float64 | Unique:  97641 | Nulls: 0
+ - aptitude_score                 | float64 | Unique:  98857 | Nulls: 0
+ - communication_skill_score      | float64 | Unique:  98868 | Nulls: 0
+ - logical_reasoning_score        | float64 | Unique:  98728 | Nulls: 0
+ - hackathons_participated        | int64   | Unique:      9 | Nulls: 0
+ - github_repos                   | int64   | Unique:     16 | Nulls: 0
+ - linkedin_connections           | int64   | Unique:    950 | Nulls: 0
+ - mock_interview_score           | float64 | Unique:  99352 | Nulls: 0
+ - attendance_percentage          | float64 | Unique:  93396 | Nulls: 0
+ - backlogs                       | int64   | Unique:      7 | Nulls: 0
+ - extracurricular_score          | float64 | Unique:  97660 | Nulls: 0
+ - leadership_score               | float64 | Unique:  98472 | Nulls: 0
+ - volunteer_experience           | object  | Unique:      2 | Nulls: 0
+ - sleep_hours                    | float64 | Unique:     71 | Nulls: 0
+ - study_hours_per_day            | float64 | Unique:     92 | Nulls: 0
+ - placement_status               | object  | Unique:      2 | Nulls: 0
+ - salary_package_lpa             | float64 | Unique:   1047 | Nulls: 0
+
+Placement Status Counts:
+placement_status
+Placed        54459
+Not Placed    45541
+Name: count, dtype: int64
+
+Salary Package Summary (Placed vs Unplaced):
+Placed count: 54459, Salary min: 7.11, max: 20.44, mean: 13.32, median: 13.30
+Unplaced count: 45541, Salary min: 0.0, max: 0.0, mean: 0.00, median: 0.00
