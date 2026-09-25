@@ -7,13 +7,25 @@ const API_ENDPOINTS = [
   'http://localhost:8000/api'
 ].filter(Boolean);
 
+function buildUrl(baseUrl, endpointPath) {
+  let base = baseUrl.trim();
+  if (base.endsWith('/')) base = base.slice(0, -1);
+  
+  // If base doesn't end with /api, append /api
+  if (!base.toLowerCase().endsWith('/api')) {
+    base = `${base}/api`;
+  }
+  
+  const cleanEndpoint = endpointPath.startsWith('/') ? endpointPath : `/${endpointPath}`;
+  return `${base}${cleanEndpoint}`;
+}
+
 async function fetchWithFallback(endpointPath, options = {}) {
   let lastError = null;
   
   for (const baseUrl of API_ENDPOINTS) {
     try {
-      const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-      const url = `${cleanBase}${endpointPath}`;
+      const url = buildUrl(baseUrl, endpointPath);
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 45000); // 45s timeout for cloud cold starts
