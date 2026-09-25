@@ -53,9 +53,14 @@ async function fetchWithFallback(endpointPath, options = {}) {
       }
       
       const errorData = await response.json().catch(() => ({}));
-      lastError = new Error(errorData.detail || `Server returned status ${response.status}`);
+      const detail = errorData.detail || `Server returned status ${response.status}`;
+      throw new Error(detail);
     } catch (err) {
       lastError = err;
+      // If error came from a live response (e.g. 500 or validation error), throw immediately without fallback loops
+      if (err.message && !err.message.includes('fetch') && !err.message.includes('AbortError')) {
+        throw err;
+      }
     }
   }
   
