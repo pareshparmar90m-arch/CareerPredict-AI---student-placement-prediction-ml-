@@ -1,12 +1,19 @@
 import os
+import sys
 import json
 import joblib
 import numpy as np
 import pandas as pd
+
+# Ensure root project directory is in python path for unpickling custom transformers
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
 from backend.schemas.prediction_schema import StudentPredictionInput, PredictionResponse
 from ml.feature_engineer import PlacementFeatureEngineer
 
-MODEL_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "ml", "saved_models")
+MODEL_DIR = os.path.join(ROOT_DIR, "ml", "saved_models")
 
 class PredictionService:
     def __init__(self, model_dir: str = MODEL_DIR):

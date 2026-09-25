@@ -19,6 +19,9 @@ async def predict_placement(student_data: StudentPredictionInput):
         response = prediction_service.predict(student_data)
         return response
     except Exception as e:
+        import traceback
+        error_msg = traceback.format_exc()
+        print(f"[FastAPI Prediction Error]:\n{error_msg}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error executing placement prediction pipeline: {str(e)}"
