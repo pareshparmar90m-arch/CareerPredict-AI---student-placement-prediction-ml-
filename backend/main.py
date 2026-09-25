@@ -28,14 +28,12 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Enable CORS for React frontend (supports ALLOWED_ORIGINS env variable)
-allowed_origins_raw = os.getenv("ALLOWED_ORIGINS", "*")
-allowed_origins = [origin.strip() for origin in allowed_origins_raw.split(",") if origin.strip()]
-
+# Enable CORS for React frontend (supports all origins dynamically via regex)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins if allowed_origins else ["*"],
-    allow_credentials=False,
+    allow_origins=["*"],
+    allow_origin_regex=r"https?://.*",
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
