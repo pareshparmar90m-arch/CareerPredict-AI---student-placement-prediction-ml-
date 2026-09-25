@@ -9,6 +9,17 @@ const API_ENDPOINTS = [
 
 function buildUrl(baseUrl, endpointPath) {
   let base = baseUrl.trim();
+  
+  // Auto-heal missing colon typos (e.g. https// -> https://)
+  if (base.startsWith('https//')) {
+    base = base.replace(/^https\/\//i, 'https://');
+  } else if (base.startsWith('http//')) {
+    base = base.replace(/^http\/\//i, 'http://');
+  }
+  
+  // Clean duplicate protocol prefixes like https://https://
+  base = base.replace(/^(https?:\/\/)+/i, 'https://');
+
   if (base.endsWith('/')) base = base.slice(0, -1);
   
   // If base doesn't end with /api, append /api
